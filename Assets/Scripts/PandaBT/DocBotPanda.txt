@@ -1,0 +1,65 @@
+tree("Root")
+	sequence
+		tree("T_IdleState") // Entry/Default State
+
+// Check if each position tag is readable by pandabt
+// Meant for testing purposes
+tree("T_MoveCheck")
+	sequence
+		MoveTo("IdlePoint")
+		MoveTo("DiagnosisPoint")
+		MoveTo("SoftRepairPoint")
+		MoveTo("HardRepairPoint")
+		MoveTo("RestockingPoint")
+		MoveTo("UpdatePoint")
+
+tree("T_IdleState")
+	sequence
+		MoveTo("IdlePoint") // Note that IdlePoint is also the "Serving Point"
+		sequence
+			CheckCustomer()
+			tree("T_ServingState")
+			
+tree("T_ServingState")
+	sequence
+		Serving()
+		tree("T_DiagnosisState")
+
+tree("T_DiagnosisState")
+	sequence
+		MoveTo("DiagnosisPoint")
+		sequence
+			fallback
+				sequence
+					CheckIfFunctional()
+					IndicateYellow("DiagnosisInterface")
+				IndicateRed("DiagnosisInterface")
+				// switch to discharge state
+			fallback
+				sequence
+					CheckIfRepairable()
+					IndicateGreen("DiagnosisInterface")
+					tree("T_SoftRepairState")
+				IndicateRed("DiagnosisInterface")
+				// switch to failure
+
+tree("T_SoftRepairState")
+	sequence
+		MoveTo("SoftRepairPoint")
+		IndicateYellow("SoftRepairInterface")
+		fallback
+			sequence
+				RepairSoftware()
+				IndicateGreen("SoftRepairInterface")
+				tree("T_HardRepairState")
+			sequence
+				IndicateRed("SoftRepairInterface")
+			// switch to failure
+				
+
+
+			
+				
+				
+	
+
