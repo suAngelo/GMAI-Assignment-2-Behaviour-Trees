@@ -17,7 +17,12 @@ public class DocBotTasks : MonoBehaviour
 
     private float stopDistance = 5.0f;
     private float interactionDistance = 20.0f;
+
     private int universalErrors = 0;
+    private int maxUniversalErrors = 3;
+
+    private int localErrors = 0;
+    private int maxLocalErrors = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -124,55 +129,22 @@ public class DocBotTasks : MonoBehaviour
     }
 
     [Task]
-    void RepairSoftware()
+    bool LocalErrorsNotMaxed()
     {
-        int localErrors = 0;
-        int maxLocalErrors = 2;
-        while (localErrors <= maxLocalErrors)
+        if (localErrors <= maxLocalErrors)
         {
-            if (UnityEngine.Random.Range(0, 10) > 0)
-            {
-                Task.current.Succeed();
-            }
-            else if (localErrors >= maxLocalErrors)
-            {
-
-                Task.current.Fail();
-            }
-            else 
-            {
-                localErrors++;
-            }
+            return true;
         }
+        return false;
     }
-
     [Task]
-    void RepairHardware()
+    bool UniversalErrorsNotMaxed()
     {
-        int localErrors = 0;
-        int maxLocalErrors = 2;
-        while (localErrors <= maxLocalErrors)
+        if (universalErrors <= maxUniversalErrors)
         {
-            if (UnityEngine.Random.Range(0, 10) < 0)
-            {
-                Task.current.Succeed();
-            }
-            else if (localErrors > maxLocalErrors)
-            {
-
-                Task.current.Fail();
-            }
-            else
-            {
-                localErrors++;
-            }
+            return true;
         }
-    }
-
-    [Task]
-    void IncrementUniversalErrors()
-    {
-        universalErrors++;
+        return false;
     }
 
     [Task]

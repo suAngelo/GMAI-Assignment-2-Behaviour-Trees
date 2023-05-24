@@ -46,16 +46,7 @@ tree("T_DiagnosisState")
 tree("T_SoftRepairState")
 	sequence
 		MoveTo("SoftRepairPoint")
-		IndicateYellow("SoftRepairInterface")
-		fallback
-			sequence
-				RepairSoftware()
-				IndicateGreen("SoftRepairInterface")
-				tree("T_HardRepairState")
-			sequence
-				IndicateRed("SoftRepairInterface")
-			// switch to failure
-				
+		
 
 
 			
