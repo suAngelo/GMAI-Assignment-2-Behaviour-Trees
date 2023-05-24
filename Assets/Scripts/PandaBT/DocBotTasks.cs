@@ -127,6 +127,24 @@ public class DocBotTasks : MonoBehaviour
         }
         return false;
     }
+    [Task]
+    bool AttemptSoftRepair()
+    {
+        if ((UnityEngine.Random.Range(0, 10) > 10))
+        {
+            Debug.Log("Local Errors on success: " + localErrors);
+            localErrors = 0; //reset local errors for hard repair
+            return true;
+        }
+        else
+        {
+            localErrors++;
+            Debug.Log("Local Errors: " + localErrors);
+            return false;      
+        }
+        
+    }
+
 
     [Task]
     bool LocalErrorsNotMaxed()

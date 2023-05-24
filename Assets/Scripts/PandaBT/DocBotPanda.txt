@@ -46,6 +46,14 @@ tree("T_DiagnosisState")
 tree("T_SoftRepairState")
 	sequence
 		MoveTo("SoftRepairPoint")
+		fallback
+			while
+				LocalErrorsNotMaxed()
+				sequence
+					AttemptSoftRepair()
+					IndicateGreen("SoftRepairInterface")
+			IndicateRed("SoftRepairInterface")
+			// switch to failure
 		
 
 
