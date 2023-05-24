@@ -17,7 +17,12 @@ public class DocBotTasks : MonoBehaviour
 
     private float stopDistance = 5.0f;
     private float interactionDistance = 20.0f;
+
     private int universalErrors = 0;
+    private int maxUniversalErrors = 3;
+
+    private int localErrors = 0;
+    private int maxLocalErrors = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -122,57 +127,50 @@ public class DocBotTasks : MonoBehaviour
         }
         return false;
     }
-
     [Task]
-    void RepairSoftware()
+    bool AttemptRepair()
     {
-        int localErrors = 0;
-        int maxLocalErrors = 2;
-        while (localErrors <= maxLocalErrors)
+        while (LocalErrorsNotMaxed())
         {
-            if (UnityEngine.Random.Range(0, 10) > 0)
+            if (UnityEngine.Random.Range(0, 10) > 1)
             {
-                Task.current.Succeed();
-            }
-            else if (localErrors >= maxLocalErrors)
-            {
-
-                Task.current.Fail();
-            }
-            else 
-            {
-                localErrors++;
-            }
-        }
-    }
-
-    [Task]
-    void RepairHardware()
-    {
-        int localErrors = 0;
-        int maxLocalErrors = 2;
-        while (localErrors <= maxLocalErrors)
-        {
-            if (UnityEngine.Random.Range(0, 10) < 0)
-            {
-                Task.current.Succeed();
-            }
-            else if (localErrors > maxLocalErrors)
-            {
-
-                Task.current.Fail();
+                Debug.Log("Local Errors Before Success: " + localErrors);
+                localErrors = 0; // reset local errors
+                return true;
             }
             else
             {
                 localErrors++;
+                Debug.Log("Local Errors: " + localErrors);
             }
         }
+        return false;
     }
 
+
+    [Task]
+    bool LocalErrorsNotMaxed()
+    {
+        if (localErrors <= maxLocalErrors)
+        {
+            return true;
+        }
+        return false;
+    }
+    [Task]
+    bool UniversalErrorsNotMaxed()
+    {
+        if (universalErrors <= maxUniversalErrors)
+        {
+            return true;
+        }
+        return false;
+    }
     [Task]
     void IncrementUniversalErrors()
     {
         universalErrors++;
+        Task.current.Succeed();
     }
 
     [Task]
