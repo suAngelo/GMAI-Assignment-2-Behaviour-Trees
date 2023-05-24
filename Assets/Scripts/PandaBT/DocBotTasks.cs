@@ -128,21 +128,23 @@ public class DocBotTasks : MonoBehaviour
         return false;
     }
     [Task]
-    bool AttemptSoftRepair()
+    bool AttemptRepair()
     {
-        if ((UnityEngine.Random.Range(0, 10) > 10))
+        while (LocalErrorsNotMaxed())
         {
-            Debug.Log("Local Errors on success: " + localErrors);
-            localErrors = 0; //reset local errors for hard repair
-            return true;
+            if (UnityEngine.Random.Range(0, 10) > 1)
+            {
+                Debug.Log("Local Errors Before Success: " + localErrors);
+                localErrors = 0; // reset local errors
+                return true;
+            }
+            else
+            {
+                localErrors++;
+                Debug.Log("Local Errors: " + localErrors);
+            }
         }
-        else
-        {
-            localErrors++;
-            Debug.Log("Local Errors: " + localErrors);
-            return false;      
-        }
-        
+        return false;
     }
 
 
@@ -163,6 +165,12 @@ public class DocBotTasks : MonoBehaviour
             return true;
         }
         return false;
+    }
+    [Task]
+    void IncrementUniversalErrors()
+    {
+        universalErrors++;
+        Task.current.Succeed();
     }
 
     [Task]

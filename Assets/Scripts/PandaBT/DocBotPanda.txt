@@ -34,7 +34,7 @@ tree("T_DiagnosisState")
 					CheckIfFunctional()
 					IndicateYellow("DiagnosisInterface")
 				IndicateRed("DiagnosisInterface")
-				// switch to discharge state
+				// switch to discharge 
 			fallback
 				sequence
 					CheckIfRepairable()
@@ -50,11 +50,39 @@ tree("T_SoftRepairState")
 			while
 				LocalErrorsNotMaxed()
 				sequence
-					AttemptSoftRepair()
+					AttemptRepair()
 					IndicateGreen("SoftRepairInterface")
-			IndicateRed("SoftRepairInterface")
-			// switch to failure
-		
+					tree("T_HardRepairState")
+			sequence
+				IndicateRed("SoftRepairInterface")
+				IncrementUniversalErrors()
+				// switch to failure
+
+tree("T_HardRepairState")
+	sequence
+		MoveTo("HardRepairPoint")
+		fallback
+			while
+				LocalErrorsNotMaxed()
+				sequence
+					AttemptRepair()
+					IndicateGreen("HardRepairInterface")
+					tree("T_DischargeState")
+			sequence
+				IndicateRed("HardRepairInterface")
+				IncrementUniversalErrors()
+				// switch to failure	
+
+tree("T_DischargeState")
+	fallback
+		sequence
+			UniversalErrorsNotMaxed()
+			tree("T_CleanupState")
+		// call repair state
+
+tree("T_CleanupState")
+	
+	
 
 
 			
