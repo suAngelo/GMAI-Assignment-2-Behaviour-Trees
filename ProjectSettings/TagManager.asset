@@ -16,6 +16,11 @@ TagManager:
   - DiagnosisInterface
   - SoftRepairInterface
   - HardRepairInterface
+  - ConveyorSpawn
+  - ConveyorSoft1
+  - ConveyorSoft2
+  - ConveyorHard1
+  - ConveyorHard2
   layers:
   - Default
   - TransparentFX
