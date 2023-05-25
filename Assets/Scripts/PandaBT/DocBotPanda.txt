@@ -80,10 +80,11 @@ tree("T_DischargeState")
 		sequence
 			CheckCustomer()
 			DischargeCustomer()
-		sequence
-			UniversalErrorsNotMaxed()
-			tree("T_CleanupState")
-		// call repair state
+		fallback
+			sequence
+				UniversalErrorsNotMaxed()
+				tree("T_CleanupState")
+			// call repair state
 
 tree("T_CleanupState")
 	sequence
