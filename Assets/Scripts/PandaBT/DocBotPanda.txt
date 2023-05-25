@@ -90,7 +90,7 @@ tree("T_CleanupState")
 	sequence
 		MoveTo("HardRepairPoint")
 		// function to remove debris instances
-		tree("T_IdleState")
+		// do not switch to idle state as it creates a circular tree
 	
 	
 
