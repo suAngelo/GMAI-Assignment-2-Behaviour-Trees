@@ -74,13 +74,22 @@ tree("T_HardRepairState")
 				// switch to failure	
 
 tree("T_DischargeState")
-	fallback
+	sequence
+		sequence
+			MoveTo("IdlePoint")
+		sequence
+			CheckCustomer()
+			DischargeCustomer()
 		sequence
 			UniversalErrorsNotMaxed()
 			tree("T_CleanupState")
 		// call repair state
 
 tree("T_CleanupState")
+	sequence
+		MoveTo("HardRepairPoint")
+		// function to remove debris instances
+		tree("T_IdleState")
 	
 	
 
