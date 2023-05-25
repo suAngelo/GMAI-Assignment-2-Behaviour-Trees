@@ -81,7 +81,6 @@ public class DocBotTasks : MonoBehaviour
     [Task]
     void Serving()
     {
-        Debug.Log("Confirm robot for repair?");
         if (Input.GetKeyDown(KeyCode.Y))
         {
             Task.current.Succeed();
@@ -145,6 +144,19 @@ public class DocBotTasks : MonoBehaviour
             }
         }
         return false;
+    }
+
+    [Task]
+    void DischargeCustomer()
+    {
+        if (Input.anyKeyDown)
+        {
+            Task.current.Succeed();
+        }
+        else
+        {
+            Debug.Log("Press any key to accept the repair and be discharged.");
+        }
     }
 
 
