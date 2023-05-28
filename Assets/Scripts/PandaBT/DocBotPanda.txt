@@ -66,6 +66,7 @@ tree("T_HardRepairState")
 				LocalErrorsNotMaxed()
 				sequence
 					AttemptRepair()
+					CreateMess()
 					IndicateGreen("HardRepairInterface")
 					tree("T_DischargeState")
 			sequence
@@ -89,7 +90,7 @@ tree("T_DischargeState")
 tree("T_CleanupState")
 	sequence
 		MoveTo("HardRepairPoint")
-		// function to remove debris instances
+		CleanMess()
 		// do not switch to idle state as it creates a circular tree
 	
 	
