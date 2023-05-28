@@ -27,6 +27,7 @@ tree("T_ServingState")
 
 tree("T_DiagnosisState")
 	sequence
+		ConveyorMoveTo("Diagnosis")
 		MoveTo("DiagnosisPoint")
 		sequence
 			fallback
@@ -34,17 +35,20 @@ tree("T_DiagnosisState")
 					CheckIfFunctional()
 					IndicateYellow("DiagnosisInterface")
 				IndicateRed("DiagnosisInterface")
-				// switch to discharge 
+				ConveyorMoveTo("PatientSpawn")
+				tree("T_DischargeState")
 			fallback
 				sequence
 					CheckIfRepairable()
 					IndicateGreen("DiagnosisInterface")
 					tree("T_SoftRepairState")
 				IndicateRed("DiagnosisInterface")
+				ConveyorMoveTo("PatientSpawn")
 				// switch to failure
 
 tree("T_SoftRepairState")
 	sequence
+		ConveyorMoveTo("SoftRepair2")
 		MoveTo("SoftRepairPoint")
 		fallback
 			while
@@ -55,11 +59,13 @@ tree("T_SoftRepairState")
 					tree("T_HardRepairState")
 			sequence
 				IndicateRed("SoftRepairInterface")
+				ConveyorMoveTo("PatientSpawn")
 				IncrementUniversalErrors()
 				// switch to failure
 
 tree("T_HardRepairState")
 	sequence
+		ConveyorMoveTo("HardRepair2")
 		MoveTo("HardRepairPoint")
 		fallback
 			while
@@ -71,12 +77,14 @@ tree("T_HardRepairState")
 					tree("T_DischargeState")
 			sequence
 				IndicateRed("HardRepairInterface")
+				ConveyorMoveTo("PatientSpawn")
 				IncrementUniversalErrors()
 				// switch to failure	
 
 tree("T_DischargeState")
 	sequence
 		sequence
+			ConveyorMoveTo("PatientSpawn")
 			MoveTo("IdlePoint")
 		sequence
 			CheckCustomer()
