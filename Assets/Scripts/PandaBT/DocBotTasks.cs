@@ -45,15 +45,11 @@ public class DocBotTasks : MonoBehaviour
         navAgent = GetComponent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player");
         debris = GameObject.FindGameObjectWithTag("Debris");
-        patientInstance = Instantiate(patientBot);
-
         spawnPos = conveyorManager.transform.Find("PatientSpawn").transform.position;
-        softRepairPos1 = conveyorManager.transform.Find("SoftRepair1").transform.position;
-        softRepairPos2 = conveyorManager.transform.Find("SoftRepair2").transform.position;
-        hardRepairPos1 = conveyorManager.transform.Find("HardRepair1").transform.position;
-        hardRepairPos2 = conveyorManager.transform.Find("HardRepair2").transform.position;
 
         debris.gameObject.SetActive(false);
+
+        patientInstance = Instantiate(patientBot);
         patientInstance.SetActive(true);
         patientInstance.transform.position =
             new Vector3(spawnPos.x, spawnPos.y - spawnOffset, spawnPos.z);
