@@ -16,6 +16,7 @@ TagManager:
   - DiagnosisInterface
   - SoftRepairInterface
   - HardRepairInterface
+  - Debris
   layers:
   - Default
   - TransparentFX

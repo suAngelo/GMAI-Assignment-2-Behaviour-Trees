@@ -10,8 +10,16 @@ using BehaviorDesigner.Runtime.Tasks.Unity.UnityInput;
 
 public class DocBotTasks : MonoBehaviour
 {
+    public GameObject patientBot;
+    public GameObject conveyorManager;
+    public float spawnOffset = 5.0f; // spawnOffset is used to ensure that the instantiated
+                                     // patientBot appears to touch the conveyor
+
+    GameObject patientInstance;
     NavMeshAgent navAgent;
     Transform target;
+    Transform conveyorTarget;
+    GameObject debris;
 
     private GameObject player;
 
@@ -24,13 +32,55 @@ public class DocBotTasks : MonoBehaviour
     private int localErrors = 0;
     private int maxLocalErrors = 3;
 
+    private Vector3 spawnPos;
+    private Vector3 softRepairPos1;
+    private Vector3 softRepairPos2;
+    private Vector3 hardRepairPos1;
+    private Vector3 hardRepairPos2;
+
+
     // Start is called before the first frame update
     void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player");
+        debris = GameObject.FindGameObjectWithTag("Debris");
+        spawnPos = conveyorManager.transform.Find("PatientSpawn").transform.position;
+
+        debris.gameObject.SetActive(false);
+
+        patientInstance = Instantiate(patientBot);
+        patientInstance.SetActive(true);
+        patientInstance.transform.position =
+            new Vector3(spawnPos.x, spawnPos.y - spawnOffset, spawnPos.z);
     }
 
+    private void Update()
+    {
+        
+    }
+
+
+
+    // ================================================================================
+    // === NORMAL FLOW OR GENERAL FUNCTIONS ===========================================
+    // ================================================================================
+    /* 
+     * These functions relate to the behaviours within normal flow, which is as follows:
+     * 
+     * 1. Idle State
+     * 2. Serving State
+     * 3. Diagnosis State
+     * 4. Software Repair State
+     * 5. Hardware Repair State
+     * 6. Discharge State
+     * 7. Cleanup State
+     * 
+     * Any states not listed above is under alternate or abnormal flow, the functions of which
+     * are below, after the functions in normal flow
+     * (note that while the behaviours in normal flow are called "states", a behaviour tree
+     * model is used to change agent behaviour.)
+     */
     [Task]
     void MoveTo(string tag)
         /*
@@ -63,6 +113,19 @@ public class DocBotTasks : MonoBehaviour
             Task.current.Fail();
         }
     }
+
+    [Task]
+    void ConveyorMoveTo(string objectName)
+    {
+            patientInstance.SetActive(true);
+            conveyorTarget = conveyorManager.transform.Find(objectName).transform;
+            patientInstance.transform.position =
+                new Vector3(conveyorTarget.position.x,
+                conveyorTarget.position.y - spawnOffset,
+                conveyorTarget.position.z);
+            Task.current.Succeed();
+    }
+        
 
     [Task]
     void Idle()
@@ -126,6 +189,7 @@ public class DocBotTasks : MonoBehaviour
         }
         return false;
     }
+
     [Task]
     bool AttemptRepair()
     {
@@ -144,6 +208,19 @@ public class DocBotTasks : MonoBehaviour
             }
         }
         return false;
+    }
+
+    [Task]
+    void CreateMess()
+    {
+        debris.gameObject.SetActive(true);
+        Task.current.Succeed();
+    }
+    [Task]
+    void CleanMess()
+    {
+        debris.gameObject.SetActive(false);
+        Task.current.Succeed();
     }
 
     [Task]
@@ -169,6 +246,7 @@ public class DocBotTasks : MonoBehaviour
         }
         return false;
     }
+
     [Task]
     bool UniversalErrorsNotMaxed()
     {
@@ -178,6 +256,7 @@ public class DocBotTasks : MonoBehaviour
         }
         return false;
     }
+
     [Task]
     void IncrementUniversalErrors()
     {
@@ -195,6 +274,7 @@ public class DocBotTasks : MonoBehaviour
         Task.current.Succeed(); // Indicate success to ensure behaviour tree does
                                 // not get stuck on "running"
     }
+
     [Task]
     void IndicateYellow(string tag)
     {
@@ -204,6 +284,7 @@ public class DocBotTasks : MonoBehaviour
         renderer.material.color = Color.yellow;
         Task.current.Succeed();
     }
+
     [Task]
     void IndicateRed(string tag)
     {
@@ -213,10 +294,22 @@ public class DocBotTasks : MonoBehaviour
         renderer.material.color = Color.red;
         Task.current.Succeed();
     }
+    // End of Normal Flow Functions
 
-    [Task]
-    void PauseRunTimeDebugLog(string txt)
-    {
-        Debug.Log(txt);
-    }
+
+    // ================================================================================
+    // === ABNORMAL FLOW FUNCTIONS ====================================================
+    // ================================================================================
+    /* 
+     * These functions relate to the behaviours outside of normal flow, which is as
+     * follows:
+     * 
+     * 8. Update State
+     * 9. Restocking State
+     * 10. Failure State
+     * 11. Call Repairman State
+     * 
+     * In a perpetual best case scenario, these states and their respective functions below
+     * will never be called. 
+     */
 }
