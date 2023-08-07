@@ -17,6 +17,7 @@ TagManager:
   - SoftRepairInterface
   - HardRepairInterface
   - Debris
+  - PartShelf
   layers:
   - Default
   - TransparentFX
